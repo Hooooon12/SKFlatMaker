@@ -78,3 +78,15 @@ double	muon_PfChargedHadronMiniIso	1
 double	muon_PfNeutralHadronMiniIso	1
 double	muon_PfGammaMiniIso	1
 double	muon_PFSumPUMiniIso	1
+double	muon_MVA	1
+double	muon_lowptMVA	1
+double	muon_softMVA	1
+double	muon_jetPtRatio	1
+double	muon_jetPtRel	1
+int	muon_simType	1
+int	muon_simExtType	1
+int	muon_simFlavour	1
+int	muon_simHeaviestMotherFlavour	1
+int	muon_simPdgId	1
+int	muon_simMotherPdgId	1
+double	muon_simMatchQuality	1

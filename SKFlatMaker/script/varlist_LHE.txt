@@ -1,3 +1,9 @@
 double	PDFWeights_Scale	1
 double	PDFWeights_Error	1
 double	PDFWeights_AlphaS	1
+double	LHE_Px	1
+double	LHE_Py	1
+double	LHE_Pz	1
+double	LHE_E	1
+int	LHE_Status	1
+int	LHE_ID	1

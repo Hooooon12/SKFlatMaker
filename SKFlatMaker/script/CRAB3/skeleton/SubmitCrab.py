@@ -13,6 +13,7 @@ config.JobType.sendExternalFolder = True
 config.JobType.pyCfgParams = [] ## EDIT
 #config.JobType.numCores = 8
 #config.JobType.maxMemoryMB = 4000
+config.JobType.allowUndistributedCMSSW = True
 
 config.Data.inputDataset = '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM' ## EDIT
 

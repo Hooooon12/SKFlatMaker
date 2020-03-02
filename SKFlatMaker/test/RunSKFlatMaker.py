@@ -85,17 +85,19 @@ GT_MC = ''
 GT_DATA = ''
 
 if Is2016:
-  GT_MC = '94X_mcRun2_asymptotic_v3'
-  GT_DATA = '94X_dataRun2_v10'
+  GT_MC = '102X_mcRun2_asymptotic_v7'
+  GT_DATA = '102X_dataRun2_v12'
 elif Is2017:
-  GT_MC = '94X_mc2017_realistic_v17'
-  GT_DATA = '94X_dataRun2_v11'
+  GT_MC = '102X_mc2017_realistic_v7'
+  GT_DATA = '102X_dataRun2_v12'
 elif Is2018:
-  GT_MC = '102X_upgrade2018_realistic_v18'
-  GT_DATA = '102X_dataRun2_Sep2018ABC_v2'
+  GT_MC = '102X_upgrade2018_realistic_v20'
+  GT_DATA = '102X_dataRun2_v12'
   if (not isMC) and '2018Prompt' in options.sampletype:
-    GT_DATA = '102X_dataRun2_Prompt_v13'
+    GT_DATA = '102X_dataRun2_Prompt_v15'
 
+print 'GT_MC = '+GT_MC
+print 'GT_DATA = '+GT_DATA
 
 ####################################################################################################################
 
@@ -210,7 +212,7 @@ if Is2016:
   #### Rerun EGammaPostReco
   ###########################
 
-  from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+  from EgammaUser.EgammaPostRecoTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
   setupEgammaPostRecoSeq(process,
                          runVID=True,
                          era='2016-Legacy',
@@ -219,26 +221,80 @@ if Is2016:
                          #runEnergyCorrections=False ## when False, VID not reran.. I dunno why..
   )
 
+  #################
+  ### Reapply JEC
+  ### https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+  #################
+
+  from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+  #### AK4
+
+  updateJetCollection(
+     process,
+     jetSource = cms.InputTag('slimmedJets'),
+     labelName = 'UpdatedJECslimmedJets',
+     jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+  )
+  process.recoTree.Jet = cms.untracked.InputTag("updatedPatJetsUpdatedJECslimmedJets")
+
+  #### AK8
+
+  updateJetCollection(
+     process,
+     jetSource = cms.InputTag('slimmedJetsAK8'),
+     labelName = 'UpdatedJECslimmedJetsAK8',
+     jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+  )
+  process.recoTree.FatJet = cms.untracked.InputTag("updatedPatJetsUpdatedJECslimmedJetsAK8")
+
+  #### JEC Sequence
+
+  process.jecSequence = cms.Sequence(
+    process.patJetCorrFactorsUpdatedJECslimmedJets *
+    process.updatedPatJetsUpdatedJECslimmedJets *
+    process.patJetCorrFactorsUpdatedJECslimmedJetsAK8 *
+    process.updatedPatJetsUpdatedJECslimmedJetsAK8
+  )
+
+  #################
+  #### Update MET
+  #### https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription
+  #### This is independent of jecSequence, but it rather reapply JEC/JER using GT withing this MET corrector module
+  #################
+
+  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+  runMetCorAndUncFromMiniAOD(process,
+                           isData=(not isMC),
+                           )
+
+
   #########################
   #### L1Prefire reweight
   #########################
 
-  process.prefiringweight = cms.EDProducer(
-    "L1ECALPrefiringWeightProducer",
+  from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+  process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
     ThePhotons = cms.InputTag("slimmedPhotons"),
     TheJets = cms.InputTag("slimmedJets"),
-    L1Maps = cms.FileInPath("SKFlatMaker/SKFlatMaker/data/L1Prefire/L1PrefiringMaps_new.root"), # update this line with the location of this file
-    DataEra = cms.string("2016BtoH"), #Use 2016BtoH for 2016
-    UseJetEMPt = cms.bool(True), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
-    PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
-  )
+    UseJetEMPt = cms.bool(True),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
+  ###########################
+  #### Rochester correction
+  ###########################
+  process.recoTree.roccorPath = cms.string('SKFlatMaker/SKFlatMaker/data/roccor.Run2.v3/RoccoR2016.txt')
 
   ###########
   #### Path
   ###########
 
   process.p = cms.Path(
-    process.egammaPostRecoSeq
+    process.egammaPostRecoSeq *
+    process.jecSequence *
+    process.fullPatMetSequence
   )
   if isMC:
     process.recoTree.StoreL1PrefireFlag = cms.untracked.bool(True)
@@ -256,7 +312,7 @@ elif Is2017:
   #### Rerun EGammaPostReco
   ###########################
 
-  from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+  from EgammaUser.EgammaPostRecoTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
   setupEgammaPostRecoSeq(process,
                          runVID=True, #saves CPU time by not needlessly re-running VID
                          era='2017-Nov17ReReco',
@@ -361,15 +417,19 @@ elif Is2017:
   #### L1Prefire reweight
   #########################
 
-  process.prefiringweight = cms.EDProducer(
-    "L1ECALPrefiringWeightProducer",
+  from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+  process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
     ThePhotons = cms.InputTag("slimmedPhotons"),
     TheJets = cms.InputTag("slimmedJets"),
-    L1Maps = cms.FileInPath("SKFlatMaker/SKFlatMaker/data/L1Prefire/L1PrefiringMaps_new.root"), # update this line with the location of this file
-    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
-    UseJetEMPt = cms.bool(True), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
-    PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
-  )
+    UseJetEMPt = cms.bool(True),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
+  ###########################
+  #### Rochester correction
+  ###########################
+  process.recoTree.roccorPath = cms.string('SKFlatMaker/SKFlatMaker/data/roccor.Run2.v3/RoccoR2017.txt')
 
   ###########
   #### Path
@@ -397,19 +457,66 @@ elif Is2018:
   #### Rerun EGammaPostReco
   ###########################
 
-  from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+  from EgammaUser.EgammaPostRecoTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
   setupEgammaPostRecoSeq(process,
                          era='2018-Prompt')  
   #a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+
+  #################
+  ### Reapply JEC
+  ### https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+  #################
+
+  from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+  #### AK4
+
+  updateJetCollection(
+     process,
+     jetSource = cms.InputTag('slimmedJets'),
+     labelName = 'UpdatedJECslimmedJets',
+     jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+  )
+  process.recoTree.Jet = cms.untracked.InputTag("updatedPatJetsUpdatedJECslimmedJets")
+
+  #### AK8
+
+  updateJetCollection(
+     process,
+     jetSource = cms.InputTag('slimmedJetsAK8'),
+     labelName = 'UpdatedJECslimmedJetsAK8',
+     jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+  )
+  process.recoTree.FatJet = cms.untracked.InputTag("updatedPatJetsUpdatedJECslimmedJetsAK8")
+
+  #### JEC Sequence
+
+  process.jecSequence = cms.Sequence(
+    process.patJetCorrFactorsUpdatedJECslimmedJets *
+    process.updatedPatJetsUpdatedJECslimmedJets *
+    process.patJetCorrFactorsUpdatedJECslimmedJetsAK8 *
+    process.updatedPatJetsUpdatedJECslimmedJetsAK8
+  )
 
   ##########
   #### JER
   ##########
 
-  process.recoTree.AK4Jet_JER_PtRes_filepath = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_PtResolution_AK4PFchs.txt')
-  process.recoTree.AK4Jet_JER_SF_filepath    = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_SF_AK4PFchs.txt')
-  process.recoTree.AK8Jet_JER_PtRes_filepath = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_PtResolution_AK8PFPuppi.txt')
-  process.recoTree.AK8Jet_JER_SF_filepath    = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V1_MC/Autumn18_V1_MC_SF_AK8PFPuppi.txt')
+  process.recoTree.AK4Jet_JER_PtRes_filepath = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V7b_MC/Autumn18_V7b_MC_PtResolution_AK4PFchs.txt')
+  process.recoTree.AK4Jet_JER_SF_filepath    = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V7b_MC/Autumn18_V7b_MC_SF_AK4PFchs.txt')
+  process.recoTree.AK8Jet_JER_PtRes_filepath = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V7b_MC/Autumn18_V7b_MC_PtResolution_AK8PFPuppi.txt')
+  process.recoTree.AK8Jet_JER_SF_filepath    = cms.string('SKFlatMaker/SKFlatMaker/data/JRDatabase/textFiles/Autumn18_V7b_MC/Autumn18_V7b_MC_SF_AK8PFPuppi.txt')
+
+  #################
+  #### Update MET
+  #### https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription
+  #### This is independent of jecSequence, but it rather reapply JEC/JER using GT withing this MET corrector module
+  #################
+
+  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+  runMetCorAndUncFromMiniAOD(process,
+                           isData=(not isMC),
+                           )
 
   #######################################
   #### ecalBadCalibReducedMINIAODFilter
@@ -443,9 +550,19 @@ elif Is2018:
     debug = cms.bool(False)
   )
 
+  ###########################
+  #### Rochester correction
+  ###########################
+  process.recoTree.roccorPath = cms.string('SKFlatMaker/SKFlatMaker/data/roccor.Run2.v3/RoccoR2018.txt')
+
+  ###########
+  #### Path
+  ###########
 
   process.p = cms.Path(
     process.egammaPostRecoSeq *
+    process.jecSequence *
+    process.fullPatMetSequence *
     process.ecalBadCalibReducedMINIAODFilter *
     process.recoTree
   )

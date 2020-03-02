@@ -59,6 +59,7 @@ double	electron_E55	1
 double	electron_RelPFIso_dBeta	1
 double	electron_RelPFIso_Rho	1
 unsigned int	electron_IDBit	1
+int	electron_IDCutBit	1
 double	electron_EnergyUnCorr	1
 double	electron_chMiniIso	1
 double	electron_nhMiniIso	1
@@ -67,3 +68,7 @@ double	electron_puChMiniIso	1
 double	electron_trackIso	1
 double	electron_dr03EcalRecHitSumEt	1
 double	electron_dr03HcalDepth1TowerSumEt	1
+double	electron_dr03HcalTowerSumEt	1
+double	electron_dr03TkSumPt	1
+double	electron_ecalPFClusterIso	1
+double	electron_hcalPFClusterIso	1

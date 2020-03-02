@@ -51,8 +51,14 @@ for line in lines:
 
   if "#" in line:
     continue
+  if line.count('/')!=3:
+    continue
 
   line = line.strip('\n')
+
+  #### incase the line contains # of event,
+  line = line.split()[0]
+
   samplePDs = line.split("/")
 
   #continue if blank line or invalid format
@@ -61,6 +67,15 @@ for line in lines:
   
   sample = samplePDs[1]
   confs = samplePDs[2]
+
+  #### get extension info
+  #### _ext1-v2
+  extension = ''
+  for w in range(0,len(confs)):
+    if confs[w:w+4]=='_ext':
+      extension = confs[w:]
+      break
+
   cmd = 'crab submit -c SubmitCrab__'+sample+'__'+confs+'.py'
 
   #### AD-HOC for 2018 periodD, which has different GT
@@ -92,8 +107,14 @@ for line in lines:
 
       if "999" in MCInfoLines[0]:
         print '#### Has Issue : '+sample
-        continue
+        #continue
 
+    #### If WR sample
+    elif 'WRtoNLtoLLJJ' in sample:
+      ArgsListString += ",'ScaleIDRange=1001,1045'"
+      ArgsListString += ",'PDFErrorIDRange=1046,1146'"
+      ArgsListString += ",'PDFAlphaSIDRange=1147,1148'"
+      ArgsListString += ",'PDFAlphaSScaleValue=0.75,0.75'"
 
     else:
       ### to avoid exit()
@@ -113,12 +134,16 @@ for line in lines:
       if isData:
         out.write("config.General.requestName = '"+sample+"__"+confs+"'\n")
       else:
-        out.write("config.General.requestName = '"+sample+"'\n")
+        out.write("config.General.requestName = '"+sample+extension+"'\n")
     elif "config.JobType.pyCfgParams" in sk_line:
-      #FIXME
       out.write("config.JobType.pyCfgParams = "+ArgsListString+"\n")
     elif "config.Data.inputDataset" in sk_line:
       out.write("config.Data.inputDataset = '"+line+"'\n")
+      if isPrivateMC:
+        out.write("config.Data.inputDBS = 'phys03'\n")
+        out.write("config.Data.ignoreLocality = True\n")
+        out.write("config.Site.whitelist = ['T2*']\n")
+
     elif 'config.Data.splitting' in sk_line:
       if isData:
         out.write("config.Data.splitting = 'LumiBased'\n")
@@ -172,16 +197,14 @@ for line in lines:
 
   if isData:
     if year=="2016":
-      out.write("config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'\n")
+      #### https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/3358.html
+      out.write("config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.txt'\n")
     elif year=="2017":
       out.write("config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt'\n")
     elif year=="2018":
       out.write("config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'\n")
     else:
       print "Wrong year : "+year
-
-  if isPrivateMC:
-    out.write("config.Data.inputDBS = 'phys03'\n")
 
   print cmd
 
