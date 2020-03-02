@@ -54,6 +54,7 @@ if len(options.inputFiles)==0:
   elif Is2018:
     if isMC:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
+      #options.inputFiles.append('file:/data6/Users/jihkim/CMSSW_10_2_15_patch1/src/HeavyMajoranaNeutrino_SSDiLepton_Tchannel_NLO_MuMu_M1000_MiniAOD.root')
       options.outputFile = "SKFlatNtuple_2018_MC.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/11697BCC-C4AB-204B-91A9-87F952F9F2C6.root')
