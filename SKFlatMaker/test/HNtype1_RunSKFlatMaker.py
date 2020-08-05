@@ -9,7 +9,7 @@ options.register('PDFErrorIDRange', "-999,-999", VarParsing.multiplicity.singlet
 options.register('PDFAlphaSIDRange', "-999,-999", VarParsing.multiplicity.singleton, VarParsing.varType.string, "PDF AlphaS ID range: 1101,1102")
 options.register('PDFAlphaSScaleValue', "-999,-999", VarParsing.multiplicity.singleton, VarParsing.varType.string, "PDF AlphaS Scale values: 1.5,1.5")
 options.register('year',-1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "year: Which year")
-options.register('mass',-1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "mass: What mass") #JH
+options.register('name',"", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name: your sample name") #JH
 options.parseArguments()
 
 import sys
@@ -27,9 +27,9 @@ else:
   ErrorMgs = "year is not correct; "+str(options.year)
   sys.exit(ErrorMgs)
 
-mass = str(options.mass)
-if mass==-1:
-  ErrorMgs = "invalid mass: "+mass
+name = str(options.name)
+if not name:
+  ErrorMgs = "input your sample name."
   sys.exit(ErrorMgs) #JH
 
 isMC = True
@@ -45,8 +45,10 @@ options.outputFile = "SKFlatNtuple.root"
 if len(options.inputFiles)==0:
   if Is2016:
     if isMC:
-      options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv3/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v1/120000/80DBA5F3-16BE-E811-854E-A0369FC5E530.root')
-      options.outputFile = "SKFlatNtuple_2016_MC.root"
+      #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv3/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v1/120000/80DBA5F3-16BE-E811-854E-A0369FC5E530.root')
+      for i in range(100):
+        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/MiniAOD_'+str(i+1)+'.root')
+      options.outputFile = name+"_2016_Ntuple.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleMuon/MINIAOD/17Jul2018_ver1-v1/80000/306DAB6C-068C-E811-9E30-0242AC1C0501.root')
       options.outputFile = "SKFlatNtuple_2016_DATA.root"
@@ -59,23 +61,8 @@ if len(options.inputFiles)==0:
       options.outputFile = "SKFlatNtuple_2017_DATA.root"
   elif Is2018:
     if isMC:
-      #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
-      for i in range(10):
-        with open('/data8/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/run_GS_'+str(i+1)+'.err', 'r') as f:
-          lines = f.readlines()
-        IsError = False
-        for line in lines:
-          if 'Fatal' in line:
-            IsError = True
-            break
-          else:
-            pass
-        if not IsError:          
-          options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'_MiniAOD_'+str(i+1)+'.root')
-      print options.inputFiles #JH
-
-      #options.outputFile = "firstRun_SKFlatNtuple_2018_MC.root"
-      options.outputFile = "HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M"+mass+"_SKFlatNtuple_2018_MC.root"
+      options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
+      options.outputFile = "firstRun_SKFlatNtuple_2018_MC.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/11697BCC-C4AB-204B-91A9-87F952F9F2C6.root')
       options.outputFile = "SKFlatNtuple_2018_DATA.root"
@@ -167,8 +154,8 @@ from SKFlatMaker.SKFlatMaker.SKFlatMaker_cfi import *
 
 process.recoTree = SKFlatMaker.clone()
 process.recoTree.DataYear = cms.untracked.int32(options.year)
-process.recoTree.DebugLevel = cms.untracked.int32(0)
-#process.recoTree.DebugLevel = cms.untracked.int32(1) #JH
+#process.recoTree.DebugLevel = cms.untracked.int32(0)
+process.recoTree.DebugLevel = cms.untracked.int32(1) #JH
 process.recoTree.StoreHLTObjectFlag = False ##FIXME
 
 # -- Objects without Corrections -- # 
@@ -186,10 +173,10 @@ process.recoTree.PDFAlphaSIDRange = cms.untracked.vint32(PDFAlphaSIDRange)
 process.recoTree.PDFAlphaSScaleValue = cms.untracked.vdouble(PDFAlphaSScaleValue)
 
 if isPrivateSample:
-  #process.recoTree.LHEEventProduct = cms.untracked.InputTag("source")
-  #process.recoTree.LHERunInfoProduct = cms.untracked.InputTag("source") 
-  process.recoTree.LHEEventProduct = cms.untracked.InputTag("externalLHEProducer")
-  process.recoTree.LHERunInfoProduct = cms.untracked.InputTag("externalLHEProducer") #JH
+  process.recoTree.LHEEventProduct = cms.untracked.InputTag("source")
+  process.recoTree.LHERunInfoProduct = cms.untracked.InputTag("source") 
+  #process.recoTree.LHEEventProduct = cms.untracked.InputTag("externalLHEProducer")
+  #process.recoTree.LHERunInfoProduct = cms.untracked.InputTag("externalLHEProducer") #JH
 
 process.recoTree.rho = cms.untracked.InputTag("fixedGridRhoFastjetAll")
 process.recoTree.conversionsInputTag = cms.untracked.InputTag("reducedEgamma:reducedConversions") # -- miniAOD -- #
