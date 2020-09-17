@@ -1282,13 +1282,13 @@ void SKFlatMaker::hltReport(const edm::Event &iEvent)
       if(theDebugLevel) cout << "[SKFlatMaker::hltReport] [" << it_HLTWC << "th Input Trigger Name WildCard = " << HLTName_WildCard[it_HLTWC] << "]" << endl;
 
       //==== find triggers in HLT matched to this WildCard
-      std::vector<std::vector<std::string>::const_iterator> matches = edm::regexMatch(trigName.triggerNames(), HLTName_WildCard[it_HLTWC]);
+      std::vector<std::vector<std::string>::const_iterator> matches = edm::regexMatch(trigName.triggerNames(), HLTName_WildCard[it_HLTWC]); //JH : a list of matched triggerNames
 
       if( !matches.empty() ){
 
         //==== iteration for each wildcard-matched triggers
         //==== e.g., {"HLT_Mu8", "HLT_Mu17"}
-        BOOST_FOREACH(std::vector<std::string>::const_iterator match, matches){
+        BOOST_FOREACH(std::vector<std::string>::const_iterator match, matches){ //JH : for match in matches
 
           //==== Cleaningup
           //==== https://github.com/CMSSNU/SKFlatMaker/issues/9
