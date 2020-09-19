@@ -90,6 +90,8 @@ SKFlatMaker = cms.EDAnalyzer("SKFlatMaker",
   StorePhotonFlag = cms.untracked.bool(True),
   StoreJetFlag = cms.untracked.bool(True),
   StoreFatJetFlag = cms.untracked.bool(True),
+  StoreGenJetFlag = cms.untracked.bool(True),
+  StoreGenFatJetFlag = cms.untracked.bool(True), #JH
   StoreMETFlag = cms.untracked.bool(True),
   StoreLHEFlag = cms.untracked.bool(True),
   StoreGENFlag = cms.untracked.bool(True),
@@ -98,6 +100,12 @@ SKFlatMaker = cms.EDAnalyzer("SKFlatMaker",
   StoreHLTReportFlag = cms.untracked.bool(True),
   StoreHLTObjectFlag = cms.untracked.bool(False),
   StoreL1PrefireFlag = cms.untracked.bool(False),
+  SSMuMuFlag = cms.untracked.bool(False),
+  SSEEFlag = cms.untracked.bool(False),
+  SSEMuFlag = cms.untracked.bool(False),
+  OSMuMuFlag = cms.untracked.bool(False),
+  OSEEFlag = cms.untracked.bool(False),
+  OSEMuFlag = cms.untracked.bool(False), #JH
 
   # -- Filters -- #
   ApplyFilter = cms.untracked.bool(False),

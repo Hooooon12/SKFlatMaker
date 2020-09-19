@@ -121,7 +121,9 @@ PileUpInfoToken                     ( consumes< std::vector< PileupSummaryInfo >
   // -- Store Flags -- //
   theStorePriVtxFlag                = iConfig.getUntrackedParameter<bool>("StorePriVtxFlag", true);
   theStoreJetFlag                   = iConfig.getUntrackedParameter<bool>("StoreJetFlag", true);
+  theStoreGenJetFlag                = iConfig.getUntrackedParameter<bool>("StoreGenJetFlag", true); //JH
   theStoreFatJetFlag                = iConfig.getUntrackedParameter<bool>("StoreFatJetFlag", true);
+  theStoreGenFatJetFlag             = iConfig.getUntrackedParameter<bool>("StoreGenFatJetFlag", true); //JH
   theStoreMETFlag                   = iConfig.getUntrackedParameter<bool>("StoreMETFlag", true);
   theStoreHLTReportFlag             = iConfig.getUntrackedParameter<bool>("StoreHLTReportFlag", true);
   theStoreHLTObjectFlag             = iConfig.getUntrackedParameter<bool>("StoreHLTObjectFlag", true);
@@ -132,6 +134,12 @@ PileUpInfoToken                     ( consumes< std::vector< PileupSummaryInfo >
   theKeepAllGen                     = iConfig.getUntrackedParameter<bool>("KeepAllGen", true);
   theStorePhotonFlag                = iConfig.getUntrackedParameter<bool>("StorePhotonFlag", true);
   theStoreL1PrefireFlag             = iConfig.getUntrackedParameter<bool>("StoreL1PrefireFlag",true);
+  theSSMuMuFlag                     = iConfig.getUntrackedParameter<bool>("SSMuMuFlag", false);
+  theSSEEFlag                       = iConfig.getUntrackedParameter<bool>("SSEEFlag", false);
+  theSSEMuFlag                      = iConfig.getUntrackedParameter<bool>("SSEMuFlag", false);
+  theOSMuMuFlag                     = iConfig.getUntrackedParameter<bool>("OSMuMuFlag", false);
+  theOSEEFlag                       = iConfig.getUntrackedParameter<bool>("OSEEFlag", false);
+  theOSEMuFlag                      = iConfig.getUntrackedParameter<bool>("OSEMuFlag", false); //JH
 
   cout << "[SKFlatMaker::SKFlatMaker] Rochester correction file from : " << edm::FileInPath( iConfig.getParameter<std::string>("roccorPath") ).fullPath() << endl;
   rc.init(edm::FileInPath( iConfig.getParameter<std::string>("roccorPath") ).fullPath());
@@ -234,6 +242,58 @@ void SKFlatMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   if(theDebugLevel) cout << "[SKFlatMaker::analyze] called" << endl;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theTTBuilder);
   
+  //====First separate out each lepton channels====// //JH
+
+  Handle<LHEEventProduct> LHEInfo;
+  iEvent.getByToken(LHEEventProductToken, LHEInfo);
+  if(!LHEInfo.isValid()) return;
+
+  const lhef::HEPEUP& lheEvent = LHEInfo->hepeup();
+  std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
+
+  int isMuMu = 0;
+  int isSS = 1;
+  for(size_t idxParticle = 0; idxParticle<lheParticles.size(); ++idxParticle){
+
+    int PID = lheEvent.IDUP[idxParticle];
+    if(abs(PID)==11){
+      isMuMu-=1;
+      if(PID>0) isSS*=-1;
+      else if(PID<0) isSS*=1;
+    }
+    else if(abs(PID)==13){
+      isMuMu+=1;
+      if(PID>0) isSS*=-1;
+      else if(PID<0) isSS*=1;
+    }
+
+  }
+
+  if( theSSMuMuFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theSSMuMuFlag" << endl;
+    if(! (isMuMu==2&&isSS==1)) return;
+  }
+  if( theSSEEFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theSSEEFlag" << endl;
+    if(! (isMuMu==-2&&isSS==1)) return;
+  }
+  if( theSSEMuFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theSSEMuFlag" << endl;
+    if(! (isMuMu==0&&isSS==1)) return;
+  }
+  if( theOSMuMuFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theOSMuMuFlag" << endl;
+    if(! (isMuMu==2&&isSS==-1)) return;
+  }
+  if( theOSEEFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theOSEEFlag" << endl;
+    if(! (isMuMu==-2&&isSS==-1)) return;
+  }
+  if( theOSEMuFlag ){
+    if(theDebugLevel) cout << "[SKFlatMaker::analyze] theOSEMuFlag" << endl;
+    if(! (isMuMu==0&&isSS==-1)) return;
+  } //JH
+
   ///////////////////////////////////////////
   // -- initialize for ntuple variables -- //
   ///////////////////////////////////////////
@@ -554,6 +614,13 @@ void SKFlatMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   jet_JECL1FastJet.clear();
   jet_JECFull.clear();
 
+  //==== GenJet
+  genjet_pt.clear();
+  genjet_eta.clear();
+  genjet_phi.clear();
+  genjet_m.clear();
+  genjet_energy.clear(); //JH
+
   //==== FatJet
   fatjet_pt.clear();
   fatjet_eta.clear();
@@ -602,6 +669,13 @@ void SKFlatMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   fatjet_LSFlep_Pt.clear();
   fatjet_LSFlep_Eta.clear();
   fatjet_LSFlep_Phi.clear();
+
+  //==== GenFatJet
+  genfatjet_pt.clear();
+  genfatjet_eta.clear();
+  genfatjet_phi.clear();
+  genfatjet_m.clear();
+  genfatjet_energy.clear(); //JH
 
   //==== Photon
   photon_Energy.clear();
@@ -732,8 +806,14 @@ void SKFlatMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
   if(theDebugLevel) cout << "[SKFlatMaker::analyze] theStoreJetFlag" << endl;
   if( theStoreJetFlag ) fillJet(iEvent);
 
+  if(theDebugLevel) cout << "[SKFlatMaker::analyze] theStoreGenJetFlag" << endl;
+  if( theStoreGenJetFlag ) fillGenJet(iEvent); //JH
+
   if(theDebugLevel) cout << "[SKFlatMaker::analyze] theStoreFatJetFlag" << endl;
   if( theStoreFatJetFlag ) fillFatJet(iEvent);
+
+  if(theDebugLevel) cout << "[SKFlatMaker::analyze] theStoreGenFatJetFlag" << endl;
+  if( theStoreGenFatJetFlag ) fillGenFatJet(iEvent); //JH
 
   if(theDebugLevel) cout << "[SKFlatMaker::analyze] theStoreMETFlag" << endl;
   if( theStoreMETFlag ) fillMET(iEvent);
@@ -869,6 +949,16 @@ void SKFlatMaker::beginJob()
 
   }
   
+  if(theStoreGenJetFlag){
+
+    DYTree->Branch("genjet_pt", "vector<double>", &genjet_pt);
+    DYTree->Branch("genjet_eta", "vector<double>", &genjet_eta);
+    DYTree->Branch("genjet_phi", "vector<double>", &genjet_phi);
+    DYTree->Branch("genjet_m", "vector<double>", &genjet_m);
+    DYTree->Branch("genjet_energy", "vector<double>", &genjet_energy);
+
+  } //JH
+
   if(theStoreFatJetFlag){
     DYTree->Branch("fatjet_pt", "vector<double>", &fatjet_pt);
     DYTree->Branch("fatjet_eta", "vector<double>", &fatjet_eta);
@@ -918,6 +1008,14 @@ void SKFlatMaker::beginJob()
     DYTree->Branch("fatjet_LSFlep_Eta", "vector<double>", &fatjet_LSFlep_Eta);
     DYTree->Branch("fatjet_LSFlep_Phi", "vector<double>", &fatjet_LSFlep_Phi);
   }
+
+  if(theStoreGenFatJetFlag){
+    DYTree->Branch("genfatjet_pt", "vector<double>", &genfatjet_pt);
+    DYTree->Branch("genfatjet_eta", "vector<double>", &genfatjet_eta);
+    DYTree->Branch("genfatjet_phi", "vector<double>", &genfatjet_phi);
+    DYTree->Branch("genfatjet_m", "vector<double>", &genfatjet_m);
+    DYTree->Branch("genfatjet_energy", "vector<double>", &genfatjet_energy);
+  } //JH
 
   // Electron
   if( theStoreElectronFlag ){
@@ -3009,6 +3107,31 @@ void SKFlatMaker::fillJet(const edm::Event &iEvent)
   
 }
 
+/////////////////////////
+// -- Get GenJets info -- // 
+/////////////////////////
+void SKFlatMaker::fillGenJet(const edm::Event &iEvent)
+{
+
+	iEvent.getByToken(genJetToken, m_genJets);
+  
+  if( m_genJets->size() > 0 && theDebugLevel > 0) 
+    cout << "[SKFlatMaker::fillGenJet] # of GenJets = " << m_genJets->size() << endl;
+  
+  if(m_genJets->size() == 0) return;
+
+  for (reco::GenJetCollection::const_iterator genjets_iter = m_genJets->begin(); genjets_iter != m_genJets->end(); ++genjets_iter){
+
+    genjet_pt.push_back( genjets_iter->pt() );
+    genjet_eta.push_back( genjets_iter->eta() );
+    genjet_phi.push_back( genjets_iter->phi() );
+    genjet_m.push_back( genjets_iter->mass() );
+    genjet_energy.push_back( genjets_iter->energy() );
+
+  } 
+  
+} //JH
+
 /////////////////////////////
 // -- Get FatJets info -- // 
 ////////////////////////////
@@ -3350,6 +3473,34 @@ void SKFlatMaker::fillFatJet(const edm::Event &iEvent)
   }
 
 }
+
+/////////////////////////////
+// -- Get GenFatJets info -- // 
+////////////////////////////
+void SKFlatMaker::fillGenFatJet(const edm::Event &iEvent)
+{
+
+  iEvent.getByToken(genFatJetToken, m_genFatJets);
+
+  if( m_genFatJets->size() > 0 && theDebugLevel > 0)
+    cout << "[SKFlatMaker::fillFatJet] # of FatJets = " << m_genFatJets->size() << endl;
+
+  if(m_genFatJets->size() == 0) return;
+
+  for (reco::GenJetCollection::const_iterator genfatjets_iter = m_genFatJets->begin(); genfatjets_iter != m_genFatJets->end(); ++genfatjets_iter){
+
+    //==== https://hypernews.cern.ch/HyperNews/CMS/get/jet-algorithms/443/2.html
+    genfatjet_pt.push_back( genfatjets_iter->pt() );
+    genfatjet_eta.push_back( genfatjets_iter->eta() );
+    genfatjet_phi.push_back( genfatjets_iter->phi() );
+    genfatjet_charge.push_back( genfatjets_iter->charge() );
+    genfatjet_area.push_back( genfatjets_iter->jetArea() );
+    genfatjet_m.push_back( genfatjets_iter->mass() );
+    genfatjet_energy.push_back( genfatjets_iter->energy() );
+
+  }
+
+} //JH
 
 void SKFlatMaker::endRun(const Run & iRun, const EventSetup & iSetup)
 {

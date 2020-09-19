@@ -190,6 +190,8 @@ class SKFlatMaker : public edm::EDAnalyzer
   virtual void fillElectrons(const edm::Event &iEvent, const edm::EventSetup& iSetup);
   virtual void fillJet(const edm::Event &iEvent);            // fill jet and b-tagging information
   virtual void fillFatJet(const edm::Event &iEvent);            // fill jet and b-tagging information
+  virtual void fillGenJet(const edm::Event &iEvent);            //JH
+  virtual void fillGenFatJet(const edm::Event &iEvent);         //JH
   virtual void hltReport(const edm::Event &iEvent);          // fill list of triggers fired in an event
   virtual void fillLHEInfo(const edm::Event &iEvent);
   virtual void fillGENInfo(const edm::Event &iEvent);            // fill MET information
@@ -267,6 +269,8 @@ class SKFlatMaker : public edm::EDAnalyzer
   bool theStorePriVtxFlag;                // Yes or No to store primary vertex
   bool theStoreJetFlag;                // Yes or No to store Jet
   bool theStoreFatJetFlag;                // Yes or No to store FatJet
+  bool theStoreGenJetFlag;                //JH
+  bool theStoreGenFatJetFlag;             //JH
   bool theStoreMETFlag;                // Yes or No to store MET 
   bool theStoreHLTReportFlag;             // Yes or No to store HLT reuslts (list of triggers fired)
   bool theStoreHLTObjectFlag;
@@ -276,6 +280,12 @@ class SKFlatMaker : public edm::EDAnalyzer
   bool theStoreGENFlag;
   bool theStorePhotonFlag;
   bool theStoreL1PrefireFlag;
+  bool theSSMuMuFlag;
+  bool theSSEEFlag;
+  bool theSSEMuFlag;
+  bool theOSMuMuFlag;
+  bool theOSEEFlag;
+  bool theOSEMuFlag; //JH
   bool theKeepAllGen;
   bool IsData;
 
@@ -397,6 +407,16 @@ class SKFlatMaker : public edm::EDAnalyzer
   vector<double> jet_JECL1FastJet;
   vector<double> jet_JECFull;
 
+  //==== GenJet
+
+  vector<double> genjet_pt;
+  vector<double> genjet_eta;
+  vector<double> genjet_phi;
+  vector<double> genjet_charge;
+  vector<double> genjet_area;
+  vector<double> genjet_m;
+  vector<double> genjet_energy; //JH
+
   //==== JEC
   JetCorrectionUncertainty *jet_jecUnc;
   //JetCorrectionUncertainty *jet_jecUnc_methodB; // for cross check
@@ -468,6 +488,16 @@ class SKFlatMaker : public edm::EDAnalyzer
   vector<double> fatjet_LSFlep_Pt;
   vector<double> fatjet_LSFlep_Eta;
   vector<double> fatjet_LSFlep_Phi;
+
+  //==== GenFatJet
+
+  vector<double> genfatjet_pt;
+  vector<double> genfatjet_eta;
+  vector<double> genfatjet_phi;
+  vector<double> genfatjet_charge;
+  vector<double> genfatjet_area;
+  vector<double> genfatjet_m;
+  vector<double> genfatjet_energy; //JH
 
   //==== Electron
 
