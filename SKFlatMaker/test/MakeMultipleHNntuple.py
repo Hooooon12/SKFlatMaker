@@ -11,9 +11,9 @@ channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
 #years = [2016, 2017, 2018]
 years = [2018]
 #masses = [1000,1200,1500]
-masses = [300]
+masses = [500,700,1000,1200,1500]
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
-names = ["DYTypeI_NLO_SF"]
+names = ["VBFTypeI_NLO_SF"]
 
 try: os.environ["CMSSW_VERSION"]
 except:
@@ -27,6 +27,7 @@ if args.mode == "condor":
         for name in names:
           workArea = name+'_M'+str(mass)+'/'+str(year)
           Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
+          print 'Now running : ./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)
           os.system('./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles))
 
 elif args.mode == "bash":
@@ -36,6 +37,7 @@ elif args.mode == "bash":
         for name in names:
           workArea = name+'_M'+str(mass)+'/'+str(year)
           Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
+          print 'Now running : python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)+' &'
           os.system('python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)+' &')
 
 else:
