@@ -10,8 +10,6 @@ args = parser.parse_args()
 channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
 #years = [2016, 2017, 2018]
 years = [2018]
-#Nfiles = 100
-Nfiles = 98
 #masses = [1000,1200,1500]
 masses = [300]
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
@@ -27,6 +25,8 @@ if args.mode == "condor":
     for channel in channels:
       for year in years:
         for name in names:
+          workArea = name+'_M'+str(mass)+'/'+str(year)
+          Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
           os.system('./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles))
 
 elif args.mode == "bash":
@@ -34,6 +34,8 @@ elif args.mode == "bash":
     for channel in channels:
       for year in years:
         for name in names:
+          workArea = name+'_M'+str(mass)+'/'+str(year)
+          Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
           os.system('python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)+' &')
 
 else:
