@@ -3,9 +3,9 @@ import commands as cmd
 
 def makeNtuple(name, year, channel, mass, Nfiles):
   cwd = os.getcwd()
-  name = name+'M'+str(mass)
-  runningDir = cwd+'/'+name+'/'+str(year) #JH directory that contains MiniAODs.. can be modified
-  os.system('cp HNtype1_RunSKFlatMaker.py '+runningDir)
+  name = name+'_M'+str(mass)
+  runningDir = cwd+'/'+name+'/'+str(year) #JH : directory that contains MiniAODs.. can be modified
+  os.system('cp -n HNtype1_RunSKFlatMaker.py '+runningDir) #JH : prevent overwriting
   os.chdir(runningDir)
   print 'I\'m here:'
   print cmd.getoutput('pwd')
@@ -14,8 +14,8 @@ def makeNtuple(name, year, channel, mass, Nfiles):
     print 'cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1'
     os.system('cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1') #JH : for Schannel pdf systematics
   elif 'VBF' in name:
-    print 'cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1'
-    os.system('cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1') #JH : for Tchannel pdf systematics
+    print 'cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1'
+    os.system('cmsRun HNtype1_RunSKFlatMaker.py year='+str(year)+' Nfiles='+str(Nfiles)+' sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name='+name+' channel='+channel+' > '+name+'_'+channel+'_'+str(year)+'_Ntuple.log 2>&1') #JH : for Tchannel pdf systematics
   os.chdir(cwd)
   print 'Returned to:'
   print cmd.getoutput('pwd')
