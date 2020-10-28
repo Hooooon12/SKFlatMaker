@@ -5,7 +5,7 @@ from ROOT import *
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 #years = [2017,2018]
-masses = [500]
+masses = [700]
 processes = ['VBF','DY']
 channels = ['OS_EE','OS_MuMu']
 years = [2018]
@@ -54,6 +54,7 @@ for year in years:
               weight_SKFlat = -1
             totWeight += weight_SKFlat
 
+          print "#### Sample name :",alias,"####"
           print "total events :", mytree.GetEntries()
           print "sum of (sign of) weights :", totWeight
 
@@ -94,6 +95,7 @@ for year in years:
                 weight_SKFlat = -1
               totWeight += weight_SKFlat
 
+            print "#### Sample name :",alias,"####"
             print "total events :", mytree.GetEntries()
             print "sum of (sign of) weights :", totWeight
 
