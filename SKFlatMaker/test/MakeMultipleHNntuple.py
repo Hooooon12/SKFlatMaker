@@ -9,11 +9,11 @@ args = parser.parse_args()
 #channels = ["OS_EE"]
 channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
 #years = [2016, 2017, 2018]
-years = [2018]
+years = [2017]
 #masses = [1000,1200,1500]
-masses = [500,700,1000,1200,1500]
+masses = [100,300,500,700,1000,1200,1500]
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
-names = ["VBFTypeI_NLO_SF"]
+names = ["DYTypeI_NLO_SF"]
 
 try: os.environ["CMSSW_VERSION"]
 except:
