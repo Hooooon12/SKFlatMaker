@@ -5,10 +5,10 @@ from ROOT import *
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 #years = [2017,2018]
-masses = [100,300,500,700,1000,1200,1500]
-processes = ['DY','VBF']
+masses = [100,300,500,700,1000,1200]
+processes = ['DY']
 channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-years = [2018]
+years = [2016]
 
 cwd = os.getcwd()
 
@@ -27,6 +27,7 @@ for year in years:
         filepath = name+str(mass)+"/"+str(year)+"/"+name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
         filename = name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
         targetDir = "/gv0/DATA/SKFlat/Run2Legacy_v4/"+str(year)+"/PrivateMC/HNtypeI/"+process+"TypeI_"+channel+"_M"+str(mass)
+        os.system("mkdir -p "+targetDir)
 
         if process is 'DY':
           os.system("cp "+filepath+" "+targetDir)
