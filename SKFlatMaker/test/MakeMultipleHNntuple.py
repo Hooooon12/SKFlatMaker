@@ -9,9 +9,9 @@ args = parser.parse_args()
 #channels = ["OS_EE"]
 channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
 #years = [2016, 2017, 2018]
-years = [2017]
-#masses = [1000,1200,1500]
-masses = [100,300,500,700,1000,1200,1500]
+years = [2016]
+masses = [100,200,300,500,600,700,800,1000,1200,1300,1500]
+#masses = [100,300,500,700,1000,1200,1500]
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
 names = ["DYTypeI_NLO_SF"]
 
@@ -26,9 +26,8 @@ if args.mode == "condor":
       for year in years:
         for name in names:
           workArea = name+'_M'+str(mass)+'/'+str(year)
-          Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
-          print 'Now running : ./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)
-          os.system('./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles))
+          print 'Now running : ./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass)
+          os.system('./MakeHNntuple.sh '+str(name)+' '+str(year)+' '+channel+' '+str(mass))
 
 elif args.mode == "bash":
   for mass in masses:
@@ -36,9 +35,8 @@ elif args.mode == "bash":
       for year in years:
         for name in names:
           workArea = name+'_M'+str(mass)+'/'+str(year)
-          Nfiles = cmd.getoutput('ls '+workArea+' | grep MiniAOD* | wc -l')
-          print 'Now running : python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)+' &'
-          os.system('python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' '+str(Nfiles)+' &')
+          print 'Now running : python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' &'
+          os.system('python MakeHNntuple.py '+str(name)+' '+str(year)+' '+channel+' '+str(mass)+' &')
 
 else:
   print "Illegal run mode:",args.mode,"."

@@ -9,12 +9,12 @@ options.register('PDFErrorIDRange', "-999,-999", VarParsing.multiplicity.singlet
 options.register('PDFAlphaSIDRange', "-999,-999", VarParsing.multiplicity.singleton, VarParsing.varType.string, "PDF AlphaS ID range: 1101,1102")
 options.register('PDFAlphaSScaleValue', "-999,-999", VarParsing.multiplicity.singleton, VarParsing.varType.string, "PDF AlphaS Scale values: 1.5,1.5")
 options.register('year',-1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "year: Which year")
-options.register('Nfiles',-1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Nfiles: number of miniaod files")
 options.register('name',"", VarParsing.multiplicity.singleton, VarParsing.varType.string, "name: your sample name") 
 options.register('channel',"", VarParsing.multiplicity.singleton, VarParsing.varType.string, "channel: lepton channel to skim (e.g. SS_MuMu)") #JH
 options.parseArguments()
 
 import sys
+import commands as cmd
 
 Is2016 = False
 Is2017 = False
@@ -53,8 +53,9 @@ if len(options.inputFiles)==0:
   if Is2016:
     if isMC:
       #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv3/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v1/120000/80DBA5F3-16BE-E811-854E-A0369FC5E530.root')
-      for i in range(options.Nfiles):
-        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2016/MiniAOD_'+str(i+1)+'.root')
+      files = cmd.getoutput('ls /data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2016/').split('\n')
+      for f in files:
+        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2016/'+f)
       options.outputFile = name+"_"+channel+"_2016_Ntuple.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2016B/SingleMuon/MINIAOD/17Jul2018_ver1-v1/80000/306DAB6C-068C-E811-9E30-0242AC1C0501.root')
@@ -62,9 +63,9 @@ if len(options.inputFiles)==0:
   elif Is2017:
     if isMC:
       #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIFall17MiniAODv2/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/40000/D87C6B2A-5C42-E811-8FD7-001E677926A8.root')
-      #options.outputFile = "SKFlatNtuple_2017_MC.root"
-      for i in range(options.Nfiles):
-        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2017/MiniAOD_'+str(i+1)+'.root')
+      files = cmd.getoutput('ls /data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2017/').split('\n')
+      for f in files:
+        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2017/'+f)
       options.outputFile = name+"_"+channel+"_2017_Ntuple.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/54F30BE9-423C-E811-A315-0CC47A7C3410.root')
@@ -72,9 +73,9 @@ if len(options.inputFiles)==0:
   elif Is2018:
     if isMC:
       #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
-      #options.outputFile = "firstRun_SKFlatNtuple_2018_MC.root"
-      for i in range(options.Nfiles):
-        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2018/MiniAOD_'+str(i+1)+'.root')
+      files = cmd.getoutput('ls /data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2018/').split('\n')
+      for f in files:
+        options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test/'+name+'/2018/'+f)
       options.outputFile = name+"_"+channel+"_2018_Ntuple.root"
     else:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/11697BCC-C4AB-204B-91A9-87F952F9F2C6.root')
@@ -211,6 +212,7 @@ process.recoTree.StorePhotonFlag = True # -- photon part should be updated! late
 process.recoTree.StoreJetFlag = True
 process.recoTree.StoreFatJetFlag = True
 process.recoTree.StoreMETFlag = True
+process.recoTree.StorePuppiMETFlag = True #JH
 process.recoTree.StoreGENFlag = isMC
 process.recoTree.KeepAllGen = isMC
 process.recoTree.StoreLHEFlag = isMC

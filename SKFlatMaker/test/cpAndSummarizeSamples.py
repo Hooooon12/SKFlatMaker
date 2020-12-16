@@ -5,9 +5,9 @@ from ROOT import *
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 #years = [2017,2018]
-masses = [700]
-processes = ['VBF','DY']
-channels = ['OS_EE','OS_MuMu']
+masses = [100,300,500,700,1000,1200,1500]
+processes = ['DY','VBF']
+channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 years = [2018]
 
 cwd = os.getcwd()
@@ -69,7 +69,7 @@ for year in years:
           os.chdir(cwd)
 
         if process is 'VBF':
-          if mass > 300:
+          if mass > 400:
             os.system("cp "+filepath+" "+targetDir)
 
             ####Now prepare info file

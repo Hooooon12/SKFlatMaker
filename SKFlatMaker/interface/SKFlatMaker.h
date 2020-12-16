@@ -185,6 +185,7 @@ class SKFlatMaker : public edm::EDAnalyzer
   
   virtual void fillPrimaryVertex(const edm::Event &iEvent);  // fill primary vertex information
   virtual void fillMET(const edm::Event &iEvent);            // fill MET information
+  virtual void fillPuppiMET(const edm::Event &iEvent);            // JH : fill Puppi MET information
   virtual void fillPhotons(const edm::Event &iEvent);
   virtual void fillMuons(const edm::Event &iEvent, const edm::EventSetup& iSetup);
   virtual void fillElectrons(const edm::Event &iEvent, const edm::EventSetup& iSetup);
@@ -227,6 +228,7 @@ class SKFlatMaker : public edm::EDAnalyzer
   edm::EDGetTokenT< std::vector<pat::Jet> >             FatJetToken;
   edm::EDGetTokenT< reco::GenJetCollection >            genFatJetToken;
   edm::EDGetTokenT< std::vector<pat::MET> >             MetToken;
+  edm::EDGetTokenT< std::vector<pat::MET> >             PuppiMetToken;
 
   edm::EDGetTokenT< LHEEventProduct >               LHEEventProductToken;
   edm::EDGetTokenT< LHERunInfoProduct >             LHERunInfoProductToken;
@@ -272,6 +274,7 @@ class SKFlatMaker : public edm::EDAnalyzer
   bool theStoreGenJetFlag;                //JH
   bool theStoreGenFatJetFlag;             //JH
   bool theStoreMETFlag;                // Yes or No to store MET 
+  bool theStorePuppiMETFlag;                // Yes or No to store Puppi MET 
   bool theStoreHLTReportFlag;             // Yes or No to store HLT reuslts (list of triggers fired)
   bool theStoreHLTObjectFlag;
   bool theStoreMuonFlag;
@@ -698,6 +701,9 @@ class SKFlatMaker : public edm::EDAnalyzer
   vector<double> gen_mass;
   vector<double> gen_charge;
   vector<int> gen_mother_index;
+  vector<int> gen_mother2_index;
+  vector<int> gen_daughter_index;
+  vector<int> gen_daughter2_index; //JH
   vector<int> gen_status;
   vector<int> gen_PID;
   vector<int> gen_isPrompt;
@@ -769,6 +775,26 @@ class SKFlatMaker : public edm::EDAnalyzer
   vector<double> pfMET_Type1_PhiCor_pt_shifts;
   vector<double> pfMET_Type1_PhiCor_phi_shifts;
   vector<double> pfMET_Type1_PhiCor_SumEt_shifts;
+
+  //==== Puppi MET
+  double PuppiMET_pt;
+  double PuppiMET_phi;
+  double PuppiMET_SumEt;
+  double PuppiMET_Type1_pt;
+  double PuppiMET_Type1_phi;
+  double PuppiMET_Type1_SumEt;
+  double PuppiMET_Type1_PhiCor_pt;
+  double PuppiMET_Type1_PhiCor_phi;
+  double PuppiMET_Type1_PhiCor_SumEt;
+  vector<double> PuppiMET_pt_shifts;
+  vector<double> PuppiMET_phi_shifts;
+  vector<double> PuppiMET_SumEt_shifts;
+  vector<double> PuppiMET_Type1_pt_shifts;
+  vector<double> PuppiMET_Type1_phi_shifts;
+  vector<double> PuppiMET_Type1_SumEt_shifts;
+  vector<double> PuppiMET_Type1_PhiCor_pt_shifts;
+  vector<double> PuppiMET_Type1_PhiCor_phi_shifts;
+  vector<double> PuppiMET_Type1_PhiCor_SumEt_shifts; //JH
 
 };
 #endif

@@ -28,9 +28,9 @@ else:
   sys.exit(ErrorMgs)
 
 mass = str(options.mass)
-if mass==-1:
-  ErrorMgs = "invalid mass: "+mass
-  sys.exit(ErrorMgs) #JH
+#if mass==-1:
+#  ErrorMgs = "invalid mass: "+mass
+#  sys.exit(ErrorMgs) #JH
 
 isMC = True
 if "data" in options.sampletype.lower():
@@ -59,7 +59,7 @@ if len(options.inputFiles)==0:
       options.outputFile = "SKFlatNtuple_2017_DATA.root"
   elif Is2018:
     if isMC:
-      #options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
+      options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
       for i in range(10):
         with open('/data8/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/run_GS_'+str(i+1)+'.err', 'r') as f:
           lines = f.readlines()

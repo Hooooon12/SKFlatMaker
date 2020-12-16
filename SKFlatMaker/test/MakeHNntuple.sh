@@ -2,7 +2,7 @@
 
 if [ -z "$1" -o -z "$2" ]
 then
-    echo "usage: $0 name year channel mass Nfiles"
+    echo "usage: $0 name year channel mass"
     echo "example: $0 DYTypeI_NLO_SF 2018 SS_MuMu 100 100"
     exit 1
 fi
@@ -17,7 +17,6 @@ name=$1
 year=$2
 channel=$3
 mass=$4
-Nfiles=$5
 
 baseDir=/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test
 name=${name}_M${mass}
@@ -37,13 +36,13 @@ echo echo Now running: >> $SCRIPT
 echo >> $SCRIPT
 echo "if [[ \"$name\" == *\"DY\"* ]];" >> $SCRIPT
 echo then >> $SCRIPT
-echo "    echo cmsRun HNtype1_RunSKFlatMaker.py year=${year} Nfiles=${Nfiles} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name=${name} channel=${channel} \> ${name}_${channel}_${year}_Ntuple.log 2\>\&1" >> $SCRIPT
-echo "    cmsRun HNtype1_RunSKFlatMaker.py year=${year} Nfiles=${Nfiles} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name=${name} channel=${channel} > ${name}_${channel}_${year}_Ntuple.log 2>&1 #JH : for Schannel pdf systematics" >> $SCRIPT
+echo "    echo cmsRun HNtype1_RunSKFlatMaker.py year=${year} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name=${name} channel=${channel} \> ${name}_${channel}_${year}_Ntuple.log 2\>\&1" >> $SCRIPT
+echo "    cmsRun HNtype1_RunSKFlatMaker.py year=${year} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 PDFAlphaSIDRange=1111,1112 PDFAlphaSScaleValue=0.75,0.75 name=${name} channel=${channel} > ${name}_${channel}_${year}_Ntuple.log 2>&1 #JH : for Schannel pdf systematics" >> $SCRIPT
 echo >> $SCRIPT
 echo "elif [[ \"$name\" == *\"VBF\"* ]];" >> $SCRIPT
 echo then >> $SCRIPT
-echo "    echo cmsRun HNtype1_RunSKFlatMaker.py year=${year} Nfiles=${Nfiles} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name=${name} channel=${channel} \> ${name}_${channel}_${year}_Ntuple.log 2\>\&1" >> $SCRIPT
-echo "    cmsRun HNtype1_RunSKFlatMaker.py year=${year} Nfiles=${Nfiles} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name=${name} channel=${channel} > ${name}_${channel}_${year}_Ntuple.log 2>&1 #JH : for Tchannel pdf systematics" >> $SCRIPT
+echo "    echo cmsRun HNtype1_RunSKFlatMaker.py year=${year} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name=${name} channel=${channel} \> ${name}_${channel}_${year}_Ntuple.log 2\>\&1" >> $SCRIPT
+echo "    cmsRun HNtype1_RunSKFlatMaker.py year=${year} sampletype=PrivateMC ScaleIDRange=1001,1009 PDFErrorIDRange=1010,1110 name=${name} channel=${channel} > ${name}_${channel}_${year}_Ntuple.log 2>&1 #JH : for Tchannel pdf systematics" >> $SCRIPT
 echo fi >> $SCRIPT
 
 chmod +x $SCRIPT
