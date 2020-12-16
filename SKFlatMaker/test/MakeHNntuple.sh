@@ -55,6 +55,7 @@ output = MakeHNntuple_${name}_${channel}_${year}_out.txt
 error = MakeHNntuple_${name}_${channel}_${year}_error.txt
 getenv = True
 request_cpus = 10
+request_memory = 8G
 accounting_group = group_cms
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
