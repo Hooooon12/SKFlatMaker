@@ -1,8 +1,8 @@
 {
-TFile *file1 = TFile::Open("DYTypeI_NLO_SF_M500_OS_EE_2016_Ntuple.root");
-TFile *file2 = TFile::Open("DYTypeI_NLO_SF_M500_OS_MuMu_2016_Ntuple.root");
-TFile *file3 = TFile::Open("DYTypeI_NLO_SF_M500_SS_EE_2016_Ntuple.root");
-TFile *file4 = TFile::Open("DYTypeI_NLO_SF_M500_SS_MuMu_2016_Ntuple.root");
+TFile *file1 = TFile::Open("DYTypeI_NLO_SF_M1500/2016/DYTypeI_NLO_SF_M1500_OS_EE_2016_Ntuple.root");
+TFile *file2 = TFile::Open("DYTypeI_NLO_SF_M1500/2016/DYTypeI_NLO_SF_M1500_OS_MuMu_2016_Ntuple.root");
+TFile *file3 = TFile::Open("DYTypeI_NLO_SF_M1500/2016/DYTypeI_NLO_SF_M1500_SS_EE_2016_Ntuple.root");
+TFile *file4 = TFile::Open("DYTypeI_NLO_SF_M1500/2016/DYTypeI_NLO_SF_M1500_SS_MuMu_2016_Ntuple.root");
 TTree *tree1 = (TTree*)file1->Get("recoTree/SKFlat");
 TTree *tree2 = (TTree*)file2->Get("recoTree/SKFlat");
 TTree *tree3 = (TTree*)file3->Get("recoTree/SKFlat");
