@@ -98,7 +98,6 @@ print 'PDFAlphaSScaleValue = ',
 print PDFAlphaSScaleValue
 print 'year = '+str(options.year)
 
-
 #### Global Tag
 #### https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
 

@@ -5,7 +5,7 @@ def makeNtuple(name, year, channel, mass):
   cwd = os.getcwd()
   name = name+'_M'+str(mass)
   runningDir = cwd+'/'+name+'/'+str(year) #JH : directory that contains MiniAODs.. can be modified
-  os.system('cp -n HNtype1_RunSKFlatMaker.py '+runningDir) #JH : prevent overwriting
+  os.system('cp HNtype1_RunSKFlatMaker.py '+runningDir)
   os.chdir(runningDir)
   print 'I\'m here:'
   print cmd.getoutput('pwd')
