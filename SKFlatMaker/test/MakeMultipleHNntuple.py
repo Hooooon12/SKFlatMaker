@@ -10,8 +10,8 @@ args = parser.parse_args()
 channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
 #years = [2016, 2017, 2018]
 years = [2016]
-#masses = [500,700,1000,1100,1200,1300,1500]
-masses = [500,700,1000]
+masses = [1100,1200,1300,1500]
+#masses = [500,700,1000]
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
 names = ["VBFTypeI_NLO_SF"]
 

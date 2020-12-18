@@ -4,6 +4,9 @@ string line;
 
 while(getline(in,line)){
   istringstream is(line);
+  TString this_line = line;
+  if(this_line.Contains("#")) continue;
+
   TString sample, year;
   is >> sample;
   is >> year;
@@ -18,17 +21,18 @@ while(getline(in,line)){
   TTree *tree2 = (TTree*)file2->Get("recoTree/SKFlat");
   TTree *tree3 = (TTree*)file3->Get("recoTree/SKFlat");
   TTree *tree4 = (TTree*)file4->Get("recoTree/SKFlat");
-  vector<int> *LHE_ID_1;
-  vector<int> *LHE_ID_2;
-  vector<int> *LHE_ID_3;
-  vector<int> *LHE_ID_4;
+  vector<int> *LHE_ID_1=NULL;
+  vector<int> *LHE_ID_2=NULL;
+  vector<int> *LHE_ID_3=NULL;
+  vector<int> *LHE_ID_4=NULL; //JH : Set NULL then SetBranchAddress will assign memory via "new". Otherwise no address to store vector so segmentation violation.
   tree1->SetBranchAddress("LHE_ID",&LHE_ID_1);
   tree2->SetBranchAddress("LHE_ID",&LHE_ID_2);
   tree3->SetBranchAddress("LHE_ID",&LHE_ID_3);
   tree4->SetBranchAddress("LHE_ID",&LHE_ID_4);
-  int events = tree1->GetEntries();
+  int events1 = tree1->GetEntries();
   cout << "//OS_EE//" << endl;
-  for(int i=0; i<events; i++){
+  cout << events1 << endl;
+  for(int i=0; i<events1; i++){
     int isSS = 1;
     tree1->GetEntry(i);
     if(i%1000==0) cout << "==========" << i << "th event==========" << endl;
@@ -40,9 +44,10 @@ while(getline(in,line)){
     }
     if(isSS!=-1) return;
   }
-  events = tree2->GetEntries();
+  int events2 = tree2->GetEntries();
   cout << "//OS_MuMu//" << endl;
-  for(int i=0; i<events; i++){
+  cout << events2 << endl;
+  for(int i=0; i<events2; i++){
     int isSS = 1;
     tree2->GetEntry(i);
     if(i%1000==0) cout << "==========" << i << "th event==========" << endl;
@@ -54,9 +59,10 @@ while(getline(in,line)){
     }
     if(isSS!=-1) return;
   }
-  events = tree3->GetEntries();
+  int events3 = tree3->GetEntries();
   cout << "//SS_EE//" << endl;
-  for(int i=0; i<events; i++){
+  cout << events3 << endl;
+  for(int i=0; i<events3; i++){
     int isSS = 1;
     tree3->GetEntry(i);
     if(i%1000==0) cout << "==========" << i << "th event==========" << endl;
@@ -68,9 +74,10 @@ while(getline(in,line)){
     }
     if(isSS!=1) return;
   }
-  events = tree4->GetEntries();
+  int events4 = tree4->GetEntries();
   cout << "//SS_MuMu//" << endl;
-  for(int i=0; i<events; i++){
+  cout << events4 << endl;
+  for(int i=0; i<events4; i++){
     int isSS = 1;
     tree4->GetEntry(i);
     if(i%1000==0) cout << "==========" << i << "th event==========" << endl;
