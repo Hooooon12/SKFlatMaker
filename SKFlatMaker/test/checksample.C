@@ -13,10 +13,10 @@ while(getline(in,line)){
 
   cout << "In " << year << " " << sample << ":" << endl;
 
-  TFile *file1 = TFile::Open(sample+"/"+year+"/"+sample+"_OS_EE_2016_Ntuple.root");
-  TFile *file2 = TFile::Open(sample+"/"+year+"/"+sample+"_OS_MuMu_2016_Ntuple.root");
-  TFile *file3 = TFile::Open(sample+"/"+year+"/"+sample+"_SS_EE_2016_Ntuple.root");
-  TFile *file4 = TFile::Open(sample+"/"+year+"/"+sample+"_SS_MuMu_2016_Ntuple.root");
+  TFile *file1 = TFile::Open(sample+"/"+year+"/"+sample+"_OS_EE_"+year+"_Ntuple.root");
+  TFile *file2 = TFile::Open(sample+"/"+year+"/"+sample+"_OS_MuMu_"+year+"_Ntuple.root");
+  TFile *file3 = TFile::Open(sample+"/"+year+"/"+sample+"_SS_EE_"+year+"_Ntuple.root");
+  TFile *file4 = TFile::Open(sample+"/"+year+"/"+sample+"_SS_MuMu_"+year+"_Ntuple.root");
   TTree *tree1 = (TTree*)file1->Get("recoTree/SKFlat");
   TTree *tree2 = (TTree*)file2->Get("recoTree/SKFlat");
   TTree *tree3 = (TTree*)file3->Get("recoTree/SKFlat");

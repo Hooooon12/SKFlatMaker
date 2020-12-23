@@ -5,8 +5,8 @@ from ROOT import *
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 #years = [2017,2018]
-masses = [600,800,1300]
-processes = ['DY']
+masses = [500,700,1000,1100,1200,1300,1500]
+processes = ['VBF']
 channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
 years = [2016]
 
