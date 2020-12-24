@@ -12,9 +12,9 @@ years = [2016]
 
 cwd = os.getcwd()
 
-with open('Sch_NLO_XsecEE_BRmultiplied.txt') as f1:
+with open('Sch_NLO_XsecEE_BRmultiplied_SS.txt') as f1:
   Sch_xsecs = f1.readlines()
-with open('Tch_NLO_XsecEE_BRmultiplied.txt') as f2:
+with open('Tch_NLO_XsecEE_BRmultiplied_SS.txt') as f2:
   Tch_xsecs = f2.readlines()
 
 for year in years:
