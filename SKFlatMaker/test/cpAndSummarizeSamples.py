@@ -4,11 +4,11 @@ from ROOT import *
 #masses = [100,300,500,700,1000,1200,1500]
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-#years = [2017,2018]
-masses = [500,700,1000,1100,1200,1300,1500]
-processes = ['VBF']
+years = [2017,2018]
+masses = [100,300,500,700,1000,1200,1500]
+processes = ['DY']
 channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-years = [2016]
+#years = [2016]
 
 cwd = os.getcwd()
 
@@ -23,7 +23,10 @@ for year in years:
   for mass in masses:
     for process in processes:
       for channel in channels:
-        name = process+"TypeI_NLO_SF_M"
+        if 'EMu' in channel:
+          name = process+"TypeI_NLO_DF_M"
+        else:
+          name = process+"TypeI_NLO_SF_M"
         filepath = name+str(mass)+"/"+str(year)+"/"+name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
         filename = name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
         targetDir = "/gv0/DATA/SKFlat/Run2Legacy_v4/"+str(year)+"/PrivateMC/HNtypeI/"+process+"TypeI_"+channel+"_M"+str(mass)
