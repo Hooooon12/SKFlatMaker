@@ -2,11 +2,11 @@
 
 import os
 
-masses = [85,90,200,400,500,600,700,800,900,1000,1100,1200,1300,1500,1700,2000]
-#processes = ['DY','VBF']
-processes = ['VBF']
+masses = [200,500,1000,1500]
+processes = ['DY','VBF']
+#processes = ['VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-channels = ['NLO_SF']
+channels = ['NLO_DF']
 years = ['2016','2017','2018']
 
 for year in years:

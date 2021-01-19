@@ -7,13 +7,15 @@ parser.add_argument('-m', '--mode', type=str, default='condor', help='run mode :
 args = parser.parse_args()
 
 #channels = ["OS_EE"]
-channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
+#channels = ["SS_MuMu","SS_EE","OS_MuMu","OS_EE"]
+channels = ["SS_EMu","OS_EMu"]
 #years = [2016, 2017, 2018]
-years = [2017]
-masses = [900,1100,1300,1700,2000]
-#masses = [600,800,900]
+years = [2016]
+#masses = [200,500,1000,1500]
+masses = [200] #test
 #names = ["VBFTypeI_NLO_SF","DYTypeI_NLO_SF"]
-names = ["DYTypeI_NLO_SF"]
+#names = ["DYTypeI_NLO_DF","VBFTypeI_NLO_DF"]
+names = ["DYTypeI_NLO_DF"]
 
 try: os.environ["CMSSW_VERSION"]
 except:

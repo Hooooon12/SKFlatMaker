@@ -4,11 +4,11 @@ from ROOT import *
 #masses = [100,300,500,700,1000,1200,1500]
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-years = [2017,2018]
-masses = [100,300,500,700,1000,1200,1500]
+#years = [2017,2018]
+masses = [200]
 processes = ['DY']
 channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-#years = [2016]
+years = [2016]
 
 cwd = os.getcwd()
 
