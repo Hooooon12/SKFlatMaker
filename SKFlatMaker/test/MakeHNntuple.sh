@@ -18,7 +18,7 @@ year=$2
 channel=$3
 mass=$4
 
-baseDir=/data8/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test
+baseDir=/data9/Users/jihkim/GeneratorTools/external/CMSSW_10_2_18/src/SKFlatMaker/SKFlatMaker/test
 name=${name}_M${mass}
 runningDir=${baseDir}/${name}/${year} #JH : directory that contains MiniAODs.. can be modified
 cp -n ${baseDir}/HNtype1_RunSKFlatMaker.py $runningDir

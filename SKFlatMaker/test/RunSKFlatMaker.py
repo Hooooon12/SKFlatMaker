@@ -61,7 +61,7 @@ if len(options.inputFiles)==0:
     if isMC:
       options.inputFiles.append('root://cms-xrd-global.cern.ch//store/mc/RunIIAutumn18MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/120000/B3F93EA2-04C6-E04E-96AF-CB8FAF67E6BA.root')
       for i in range(10):
-        with open('/data8/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/run_GS_'+str(i+1)+'.err', 'r') as f:
+        with open('/data9/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/run_GS_'+str(i+1)+'.err', 'r') as f:
           lines = f.readlines()
         IsError = False
         for line in lines:
@@ -71,7 +71,7 @@ if len(options.inputFiles)==0:
           else:
             pass
         if not IsError:          
-          options.inputFiles.append('file:/data8/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'_MiniAOD_'+str(i+1)+'.root')
+          options.inputFiles.append('file:/data9/Users/jihkim/GeneratorTools/MG/Sample/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'/run_'+str(i+1)+'/HeavyMajoranaNeutrino_SSDiLepton_Schannel_NLO_MuMu_M'+mass+'_MiniAOD_'+str(i+1)+'.root')
       print options.inputFiles #JH
 
       #options.outputFile = "firstRun_SKFlatNtuple_2018_MC.root"

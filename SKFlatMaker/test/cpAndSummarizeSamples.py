@@ -4,11 +4,11 @@ from ROOT import *
 #masses = [100,300,500,700,1000,1200,1500]
 #processes = ['DY','VBF']
 #channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-#years = [2017,2018]
+years = [2017,2018]
 masses = [200,500,1000,1500]
 processes = ['DY','VBF']
 channels = ['OS_EMu','SS_EMu']
-years = [2016]
+#years = [2016]
 
 cwd = os.getcwd()
 
@@ -24,8 +24,8 @@ with open('Tch_NLO_XsecEE_BRmultiplied.txt') as f4:
 for year in years:
   infoDir = "/data6/Users/jihkim/SKFlatAnalyzer/data/Run2Legacy_v4/"+str(year)+"/Sample/CommonSampleInfo/"
   ForSNUDir = "/data6/Users/jihkim/SKFlatAnalyzer/data/Run2Legacy_v4/"+str(year)+"/Sample/ForSNU/"
-  infoDir_public = "/data8/Users/jihkim_public/SampleInfo/"+str(year)+"/CommonSampleInfo/"
-  ForSNUDir_public = "/data8/Users/jihkim_public/SampleInfo/"+str(year)+"/ForSNU/"
+  infoDir_public = "/data9/Users/jihkim_public/SampleInfo/"+str(year)+"/CommonSampleInfo/"
+  ForSNUDir_public = "/data9/Users/jihkim_public/SampleInfo/"+str(year)+"/ForSNU/"
   for mass in masses:
     for process in processes:
       for channel in channels:
