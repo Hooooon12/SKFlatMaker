@@ -79,7 +79,7 @@ for line in lines:
   cmd = 'crab submit -c SubmitCrab__'+sample+'__'+confs+'.py'
 
   #### AD-HOC for 2018 periodD, which has different GT
-  if isData and year=="2018" and "Run2018D" in confs and "PromptReco" in confs:
+  if isData and (year=="2018") and ("Run2018D" in confs):
     print "#### 2018 DATA periodD :"+sample+"/"+confs+"/MINIAOD"
     str_sample = "DATA2018Prompt"
 
@@ -184,7 +184,7 @@ for line in lines:
         out.write("config.Data.outputDatasetTag = 'SKFlat_"+SKFlatTag+"'\n")
 
     elif 'config.Data.outLFNDirBase' in sk_line:
-      out.write("config.Data.outLFNDirBase = '/store/user/%s/SKFlat/"+year+"/' % (getUsernameFromSiteDB())\n")
+      out.write("config.Data.outLFNDirBase = '/store/user/%s/SKFlat/"+year+"/' % (getUsername())\n")
 
     elif 'config.Site.storageSite' in sk_line:
       #if isPrivateMC:
