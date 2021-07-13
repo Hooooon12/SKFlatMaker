@@ -14,17 +14,22 @@ while(getline(in,line)){
 
   cout << "In " << year << " " << sample << " " << channel << ":" << endl;
 
-  TFile *file = TFile::Open(sample+"/"+year+"/"+sample+"_"+channel+"_"+year+"_Ntuple.root");
-  TTree *tree = (TTree*)file->Get("recoTree/SKFlat");
+  //TFile *file = TFile::Open(sample+"/"+year+"/"+sample+"_"+channel+"_"+year+"_Ntuple.root");
+  //TTree *tree = (TTree*)file->Get("recoTree/SKFlat");
+  TChain *fChain = new TChain("recoTree/SKFlat");
+  fChain->Add(sample+"/"+year+"/Ntuples/"+sample+"_"+channel+"_"+year+"_Ntuple*.root");
   vector<int> *LHE_ID=NULL; //JH : Set NULL then SetBranchAddress will assign memory via "new". Otherwise no address to store vector so segmentation violation.
-  tree->SetBranchAddress("LHE_ID",&LHE_ID);
-  int events1 = tree->GetEntries();
+  //tree->SetBranchAddress("LHE_ID",&LHE_ID);
+  fChain->SetBranchAddress("LHE_ID",&LHE_ID);
+  //int events = tree->GetEntries();
+  int events = fChain->GetEntries();
   cout << "//"+channel+"//" << endl;
-  cout << events1 << endl;
-  for(int i=0; i<events1; i++){
+  cout << events << endl;
+  for(int i=0; i<events; i++){
     int isSS = 1;
     int isEMu = 0;
-    tree->GetEntry(i);
+    //tree->GetEntry(i);
+    fChain->GetEntry(i);
     if(i%1000==0) cout << "==========" << i << "th event==========" << endl;
     for(unsigned int j=0; j<LHE_ID->size(); j++){
       //cout << j << "th particle PID : " << LHE_ID->at(j) << endl;

@@ -2199,8 +2199,10 @@ void SKFlatMaker::fillElectrons(const edm::Event &iEvent, const edm::EventSetup&
   for(int i=0; i< (int)ElecHandle->size(); i++){
     const auto el = ElecHandle->ptrAt(i);
     
-    electron_MVAIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values") );
-    electron_MVANoIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values") );
+    //electron_MVAIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values") );
+    //electron_MVANoIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values") );
+    electron_MVAIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17IsoV1Values") );
+    electron_MVANoIso.push_back( el -> userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values") ); //JH : this is outdated but leave here to be consistent with other samples.
 
     if(el->hasUserFloat("ecalTrkEnergyPostCorr")){
 

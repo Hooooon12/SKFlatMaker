@@ -1,14 +1,15 @@
 import os
+import commands as cmd
 from ROOT import *
 
 #masses = [100,300,500,700,1000,1200,1500]
+masses = [2000]
 #processes = ['DY','VBF']
-#channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
-years = [2017,2018]
-masses = [200,500,1000,1500]
+channels = ['OS_EE','OS_MuMu','SS_EE','SS_MuMu']
+#channels = ['OS_EMu','SS_EMu']
+years = [2016]
+#years = [2017,2018]
 processes = ['DY','VBF']
-channels = ['OS_EMu','SS_EMu']
-#years = [2016]
 
 cwd = os.getcwd()
 
@@ -37,13 +38,15 @@ for year in years:
           name = process+"TypeI_NLO_SF_M"
           Sch_xsecs = Sch_xsecs_SF
           Tch_xsecs = Tch_xsecs_SF
-        filepath = name+str(mass)+"/"+str(year)+"/"+name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
-        filename = name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
+        #filepath = name+str(mass)+"/"+str(year)+"/"+name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
+        #filename = name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple.root"
+        filepath = name+str(mass)+"/"+str(year)+"/Ntuples/"+name+str(mass)+"_"+channel+"_"+str(year)+"_Ntuple*.root"
         targetDir = "/gv0/DATA/SKFlat/Run2Legacy_v4/"+str(year)+"/PrivateMC/HNtypeI/"+process+"TypeI_"+channel+"_M"+str(mass)
         os.system("mkdir -p "+targetDir)
 
         if process is 'DY':
           os.system("cp "+filepath+" "+targetDir)
+          fileStoragePath = cmd.getoutput("realpath "+targetDir+"/*.root")
 
           ####Now prepare info file
           alias = process+"TypeI_"+channel+"_M"+str(mass)
@@ -52,24 +55,31 @@ for year in years:
           for line in Sch_xsecs:
             if line.split('\t')[0] == str(mass):
               xsec += line.split('\t')[1].strip()
-          os.chdir(targetDir)
+          #os.chdir(targetDir)
 
           ####Then produce the info file
-          myfile = TFile.Open(filename)
-          mytree = myfile.Get("recoTree/SKFlat")
+          #myfile = TFile.Open(filename)
+          #mytree = myfile.Get("recoTree/SKFlat")
+          mychain = TChain("recoTree/SKFlat")
+          mychain.Add(filepath)
           weight_SKFlat = 0
           totWeight = 0
-          Nevents = mytree.GetEntries()
+          #Nevents = mytree.GetEntries()
+          Nevents = mychain.GetEntries()
           for i in range(Nevents):
-            mytree.GetEntry(i)
-            if mytree.gen_weight > 0.:
+            #mytree.GetEntry(i)
+            mychain.GetEntry(i)
+            #if mytree.gen_weight > 0.:
+            if mychain.gen_weight > 0.:
               weight_SKFlat = 1
-            elif mytree.gen_weight < 0.:
+            #elif mytree.gen_weight < 0.:
+            elif mychain.gen_weight < 0.:
               weight_SKFlat = -1
             totWeight += weight_SKFlat
 
           print "#### Sample name :",alias,"####"
-          print "total events :", mytree.GetEntries()
+          #print "total events :", mytree.GetEntries()
+          print "total events :", mychain.GetEntries()
           print "sum of (sign of) weights :", totWeight
 
           with open(infoDir+alias+'.txt','w') as infoFile:
@@ -78,14 +88,16 @@ for year in years:
           os.system('cp '+infoDir+alias+'.txt '+infoDir_public)
 
           with open(ForSNUDir+alias+'.txt','w') as pathFile:
-            pathFile.write(targetDir+"/"+filename)
+            #pathFile.write(targetDir+"/"+filename)
+            pathFile.write(fileStoragePath)
           os.system('cp '+ForSNUDir+alias+'.txt '+ForSNUDir_public)
 
-          os.chdir(cwd)
+          #os.chdir(cwd)
 
         if process is 'VBF':
           if mass > 400:
             os.system("cp "+filepath+" "+targetDir)
+            fileStoragePath = cmd.getoutput("realpath "+targetDir+"/*.root")
 
             ####Now prepare info file
             alias = process+"TypeI_"+channel+"_M"+str(mass)
@@ -94,24 +106,31 @@ for year in years:
             for line in Tch_xsecs:
               if line.split('\t')[0] == str(mass):
                 xsec += line.split('\t')[1].strip()
-            os.chdir(targetDir)
+            #os.chdir(targetDir)
 
             ####Then produce the info file
-            myfile = TFile.Open(filename)
-            mytree = myfile.Get("recoTree/SKFlat")
+            #myfile = TFile.Open(filename)
+            #mytree = myfile.Get("recoTree/SKFlat")
+            mychain = TChain("recoTree/SKFlat")
+            mychain.Add(filepath)
             weight_SKFlat = 0
             totWeight = 0
-            Nevents = mytree.GetEntries()
+            #Nevents = mytree.GetEntries()
+            Nevents = mychain.GetEntries()
             for i in range(Nevents):
-              mytree.GetEntry(i)
-              if mytree.gen_weight > 0.:
+              #mytree.GetEntry(i)
+              mychain.GetEntry(i)
+              #if mytree.gen_weight > 0.:
+              if mychain.gen_weight > 0.:
                 weight_SKFlat = 1
-              elif mytree.gen_weight < 0.:
+              #elif mytree.gen_weight < 0.:
+              elif mychain.gen_weight < 0.:
                 weight_SKFlat = -1
               totWeight += weight_SKFlat
 
             print "#### Sample name :",alias,"####"
-            print "total events :", mytree.GetEntries()
+            #print "total events :", mytree.GetEntries()
+            print "total events :", mychain.GetEntries()
             print "sum of (sign of) weights :", totWeight
 
             with open(infoDir+alias+'.txt','w') as infoFile:
@@ -120,7 +139,7 @@ for year in years:
             os.system('cp '+infoDir+alias+'.txt '+infoDir_public)
 
             with open(ForSNUDir+alias+'.txt','w') as pathFile:
-              pathFile.write(targetDir+"/"+filename)
+              pathFile.write(fileStoragePath)
             os.system('cp '+ForSNUDir+alias+'.txt '+ForSNUDir_public)
 
-            os.chdir(cwd)
+            #os.chdir(cwd)
